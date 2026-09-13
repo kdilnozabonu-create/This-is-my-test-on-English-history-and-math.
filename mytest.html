@@ -1,0 +1,2388 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📚 Study Quiz — Tarix va English</title>
+<style>
+
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    background:linear-gradient(135deg,#2563eb,#7c3aed);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.container{
+    background:white;
+    width:850px;
+    max-width:100%;
+    border-radius:22px;
+    padding:30px;
+    box-shadow:0 20px 60px rgba(0,0,0,.25);
+}
+
+/* HEADER */
+
+h1{
+    text-align:center;
+    margin-top:0;
+    color:#111827;
+}
+
+.subtitle{
+    text-align:center;
+    color:#6b7280;
+    margin-bottom:25px;
+}
+
+/* TOP STATS */
+
+.stats{
+    display:flex;
+    gap:12px;
+    margin-bottom:20px;
+}
+
+.stat{
+    flex:1;
+    background:#f3f4f6;
+    border-radius:12px;
+    padding:12px;
+    text-align:center;
+}
+
+.stat-title{
+    font-size:13px;
+    color:#6b7280;
+}
+
+.stat-value{
+    font-size:20px;
+    font-weight:bold;
+    margin-top:4px;
+    color:#2563eb;
+}
+
+/* TOPICS */
+
+.topics-title{
+    font-size:20px;
+    font-weight:bold;
+    margin-bottom:15px;
+}
+
+.topics{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+.topic{
+    border:2px solid #e5e7eb;
+    border-radius:14px;
+    padding:18px 10px;
+    text-align:center;
+    cursor:pointer;
+    transition:.25s;
+    background:white;
+    font-weight:bold;
+}
+
+.topic:hover{
+    transform:translateY(-3px);
+    border-color:#2563eb;
+    background:#eff6ff;
+}
+
+.topic.active{
+    background:#2563eb;
+    color:white;
+    border-color:#2563eb;
+}
+
+/* QUIZ */
+
+#quiz{
+    display:none;
+}
+
+.progress-info{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:8px;
+    font-weight:bold;
+}
+
+.progress-bar{
+    width:100%;
+    height:12px;
+    background:#e5e7eb;
+    border-radius:20px;
+    overflow:hidden;
+    margin-bottom:25px;
+}
+
+.progress-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,#2563eb,#7c3aed);
+    transition:.4s;
+}
+
+.question{
+    font-size:23px;
+    font-weight:bold;
+    margin-bottom:20px;
+    line-height:1.4;
+}
+
+.option{
+    border:2px solid #ddd;
+    border-radius:12px;
+    padding:15px;
+    margin:12px 0;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.option:hover{
+    background:#eef4ff;
+    border-color:#93c5fd;
+}
+
+.option.selected{
+    border-color:#2563eb;
+    background:#dbeafe;
+}
+
+/* BUTTON */
+
+button{
+    margin-top:20px;
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    background:#2563eb;
+    color:white;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.25s;
+}
+
+button:hover{
+    background:#1d4ed8;
+    transform:translateY(-1px);
+}
+
+.back-btn{
+    background:#6b7280;
+}
+
+.back-btn:hover{
+    background:#4b5563;
+}
+
+/* RESULT */
+
+.result{
+    text-align:center;
+}
+
+.result h1{
+    margin-bottom:10px;
+}
+
+.big-score{
+    font-size:70px;
+    font-weight:bold;
+    color:#2563eb;
+    margin:15px 0;
+}
+
+.result-message{
+    font-size:20px;
+    margin-bottom:25px;
+}
+
+.result-stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+.result-box{
+    background:#f3f4f6;
+    border-radius:14px;
+    padding:18px;
+}
+
+.result-box strong{
+    display:block;
+    font-size:25px;
+    color:#2563eb;
+    margin-bottom:5px;
+}
+
+/* MISTAKES */
+
+.mistake{
+    margin:25px 0;
+    padding:18px;
+    border:2px solid #e5e7eb;
+    border-radius:14px;
+    text-align:left;
+    background:#fafafa;
+}
+
+.mistake h3{
+    margin-top:0;
+}
+
+.your{
+    color:#dc2626;
+}
+
+.correct{
+    color:#16a34a;
+}
+
+.explanation{
+    background:#eff6ff;
+    padding:12px;
+    border-radius:8px;
+}
+
+
+/* ================= WHITEBOARD ================= */
+
+.whiteboard-open-btn{
+    margin-top:25px;
+    background:linear-gradient(90deg,#7c3aed,#2563eb);
+}
+
+#whiteboard{
+    display:none;
+}
+
+.board-title{
+    text-align:center;
+    margin-top:0;
+    color:#111827;
+}
+
+.board-tools{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    align-items:center;
+    padding:12px;
+    margin:15px 0;
+    background:#f3f4f6;
+    border-radius:14px;
+}
+
+.board-tools button{
+    width:auto;
+    margin:0;
+    padding:9px 13px;
+    font-size:14px;
+}
+
+.board-tools input[type="color"]{
+    width:42px;
+    height:38px;
+    border:none;
+    padding:2px;
+    cursor:pointer;
+    background:white;
+    border-radius:8px;
+}
+
+.board-tools input[type="range"]{
+    width:100px;
+}
+
+#boardCanvas{
+    display:block;
+    width:100%;
+    height:500px;
+    background:white;
+    border:2px solid #d1d5db;
+    border-radius:14px;
+    cursor:crosshair;
+    touch-action:none;
+}
+
+.board-hint{
+    text-align:center;
+    color:#6b7280;
+    font-size:13px;
+    margin:10px 0;
+}
+
+.board-back{
+    background:#6b7280;
+}
+
+.board-back:hover{
+    background:#4b5563;
+}
+
+@media(max-width:650px){
+    #boardCanvas{
+        height:400px;
+    }
+}
+
+/* MOBILE */
+
+@media(max-width:650px){
+
+    .topics{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .stats{
+        flex-direction:column;
+    }
+
+    .result-stats{
+        grid-template-columns:1fr;
+    }
+
+    .question{
+        font-size:19px;
+    }
+
+}
+
+
+.subject-screen{
+    text-align:center;
+}
+.subject-screen h1{
+    margin-bottom:8px;
+}
+.subject-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:16px;
+    margin-top:25px;
+}
+.subject-card{
+    border:2px solid #e5e7eb;
+    border-radius:18px;
+    padding:28px 18px;
+    cursor:pointer;
+    background:white;
+    transition:.25s;
+    font-weight:bold;
+    font-size:20px;
+}
+.subject-card:hover{
+    transform:translateY(-4px);
+    border-color:#2563eb;
+    background:#eff6ff;
+    box-shadow:0 10px 25px rgba(37,99,235,.12);
+}
+.subject-icon{
+    font-size:42px;
+    margin-bottom:10px;
+}
+.subject-desc{
+    display:block;
+    font-size:14px;
+    font-weight:normal;
+    color:#6b7280;
+    margin-top:7px;
+}
+.mode-label{
+    display:inline-block;
+    margin:0 auto 18px;
+    padding:8px 14px;
+    border-radius:999px;
+    background:#eef2ff;
+    color:#4338ca;
+    font-weight:bold;
+    font-size:13px;
+}
+@media(max-width:650px){
+    .subject-grid{grid-template-columns:1fr;}
+}
+
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<!-- ================= SUBJECT SELECTOR ================= -->
+<div id="subjectHome" class="subject-screen">
+    <div class="mode-label">📚 BUGUN NIMANI O‘RGANAMIZ?</div>
+    <h1>Study Quiz</h1>
+    <p class="subtitle">Bugun yechmoqchi bo‘lgan faningizni tanlang</p>
+
+    <div class="subject-grid">
+        <div class="subject-card" onclick="openSubject('history')">
+            <div class="subject-icon">🇺🇿</div>
+            O‘zbekiston tarixi
+            <span class="subject-desc">Qadimgi davr, Amir Temur, xonliklar, mustaqillik va Ipak yo‘li</span>
+        </div>
+
+        <div class="subject-card" onclick="openSubject('math')">
+            <div class="subject-icon">➗</div>
+            Matematika
+            <span class="subject-desc">Arifmetika, algebra va geometriya bo‘yicha testlar</span>
+        </div>
+
+        <div class="subject-card" onclick="openSubject('english')">
+            <div class="subject-icon">🇬🇧</div>
+            English Grammar
+            <span class="subject-desc">Comparatives, Modal Verbs, Have to, Can/Could, Must va Should</span>
+        </div>
+    </div>
+
+    <div class="stats" style="margin-top:25px;">
+        <div class="stat">
+            <div class="stat-title">Tugatilgan testlar</div>
+            <div class="stat-value" id="testsCompleted">0</div>
+        </div>
+        <div class="stat">
+            <div class="stat-title">O‘rtacha natija</div>
+            <div class="stat-value" id="averageScore">0%</div>
+        </div>
+        <div class="stat">
+            <div class="stat-title">Eng yaxshi natija</div>
+            <div class="stat-value" id="bestScore">0%</div>
+        </div>
+    </div>
+
+    <div class="topic" onclick="openWhiteboard()" style="margin-top:15px;">
+        📝<br>Whiteboard
+    </div>
+</div>
+
+<!-- ================= TOPICS ================= -->
+<div id="topicHome" style="display:none;">
+    <h1 id="subjectTitle"></h1>
+    <p class="subtitle" id="subjectSubtitle"></p>
+
+    <div class="topics" id="topicList"></div>
+
+    <button class="back-btn" onclick="backToSubjects()">← Fan tanlashga qaytish</button>
+</div>
+
+<!-- ================= WHITEBOARD ================= -->
+<div id="whiteboard">
+    <h1 class="board-title">✏️ Interaktiv doska</h1>
+
+    <div class="board-tools">
+        <button onclick="setBoardTool('draw')">🖊️ Chizish</button>
+        <button onclick="setBoardTool('eraser')">🧹 O‘chirg‘ich</button>
+        <button onclick="setBoardTool('text')">📝 Matn</button>
+
+        <label>
+            Rang:
+            <input type="color" id="boardColor" value="#111827">
+        </label>
+
+        <label>
+            O‘lcham:
+            <input type="range" id="boardSize" min="1" max="30" value="4">
+        </label>
+
+        <button onclick="undoBoard()">↩️ Bekor qilish</button>
+        <button onclick="clearBoard()">🗑️ Tozalash</button>
+        <button onclick="saveBoard()">💾 Saqlash</button>
+    </div>
+
+    <canvas id="boardCanvas"></canvas>
+
+    <p class="board-hint">
+        Sichqoncha yoki barmoq bilan chizing. Matn yozish uchun 📝 Matn tugmasini tanlang.
+    </p>
+
+    <button class="board-back" onclick="closeWhiteboard()">← Bosh sahifaga qaytish</button>
+</div>
+
+<!-- ================= QUIZ ================= -->
+<div id="quiz" style="display:none;">
+    <h1 id="topicName"></h1>
+
+    <div class="progress-info">
+        <span id="progressText">Savol 1 / 10</span>
+        <span id="liveScore">Natija: 0%</span>
+    </div>
+
+    <div class="progress-bar">
+        <div id="progressFill" class="progress-fill"></div>
+    </div>
+
+    <div id="question" class="question"></div>
+    <div id="answers"></div>
+
+    <button onclick="nextQuestion()">Keyingi →</button>
+    <button class="back-btn" onclick="backToTopics()">← Mavzuni almashtirish</button>
+</div>
+
+<!-- ================= RESULT ================= -->
+<div id="result" style="display:none">
+    <div class="result">
+        <h1>🎉 Test tugadi!</h1>
+
+        <div class="big-score" id="finalScore">0%</div>
+        <div class="result-message" id="resultMessage"></div>
+
+        <div class="result-stats">
+            <div class="result-box">
+                <strong id="correctCount">0</strong>
+                To‘g‘ri
+            </div>
+            <div class="result-box">
+                <strong id="wrongCount">0</strong>
+                Xatolar
+            </div>
+            <div class="result-box">
+                <strong id="totalQuestions">0</strong>
+                Savollar
+            </div>
+        </div>
+
+        <div id="mistakes"></div>
+
+        <button onclick="backToTopics()">📚 Mavzuni tanlash</button>
+        <button class="back-btn" onclick="backToSubjects()">🏠 Fan tanlash</button>
+    </div>
+</div>
+
+</div>
+
+<script>
+/* =====================================================
+   QUESTION DATABASES FROM BOTH ORIGINAL FILES
+===================================================== */
+
+const historyQuestionSets = {
+  "ancient": [
+    {
+      "q": "Qadimgi O‘zbekiston hududida mashhur bo‘lgan qadimgi davlatlardan biri qaysi?",
+      "a": [
+        "So‘g‘diyona",
+        "Angliya",
+        "Fransiya",
+        "Yaponiya"
+      ],
+      "c": 0,
+      "e": "So‘g‘diyona Markaziy Osiyodagi qadimgi tarixiy hududlardan biridir."
+    },
+    {
+      "q": "Qadimgi Baqtriya asosan qaysi hudud bilan bog‘liq?",
+      "a": [
+        "Markaziy Osiyo",
+        "Janubiy Amerika",
+        "G‘arbiy Yevropa",
+        "Avstraliya"
+      ],
+      "c": 0,
+      "e": "Baqtriya qadimgi Markaziy Osiyo hududidagi davlatlardan biri bo‘lgan."
+    },
+    {
+      "q": "Afrosiyob shahri qaysi qadimgi shahar bilan bog‘liq?",
+      "a": [
+        "Samarqand",
+        "Buxoro",
+        "Xiva",
+        "Qo‘qon"
+      ],
+      "c": 0,
+      "e": "Afrosiyob qadimgi Samarqand shahri xarobalari bilan bog‘liq."
+    },
+    {
+      "q": "Qadimgi Xorazm qaysi daryo quyi oqimi bilan bog‘liq bo‘lgan?",
+      "a": [
+        "Amudaryo",
+        "Nil",
+        "Volga",
+        "Dunay"
+      ],
+      "c": 0,
+      "e": "Qadimgi Xorazm Amudaryoning quyi oqimi hududlarida rivojlangan."
+    },
+    {
+      "q": "Buyuk Ipak yo‘li asosan nimani bog‘lagan?",
+      "a": [
+        "Sharq va G‘arbni",
+        "Shimol va Janubiy Amerikani",
+        "Afrika va Avstraliyani",
+        "Faqat Yevropani"
+      ],
+      "c": 0,
+      "e": "Buyuk Ipak yo‘li Sharq va G‘arb o‘rtasidagi savdo va madaniy aloqalarni kuchaytirgan."
+    },
+    {
+      "q": "Qadimgi Samarqandning tarixiy nomi nima edi?",
+      "a": [
+        "Afrosiyob",
+        "Marv",
+        "Balx",
+        "Termiz"
+      ],
+      "c": 0,
+      "e": "Afrosiyob qadimgi Samarqandning tarixiy nomi bilan bog‘liq."
+    },
+    {
+      "q": "Qadimgi Termiz qaysi daryo bo‘yida joylashgan?",
+      "a": [
+        "Amudaryo",
+        "Sirdaryo",
+        "Zarafshon",
+        "Chirchiq"
+      ],
+      "c": 0,
+      "e": "Termiz Amudaryo bo‘yida joylashgan."
+    },
+    {
+      "q": "So‘g‘diyona tarixiy jihatdan qaysi shahar bilan kuchli bog‘liq?",
+      "a": [
+        "Samarqand",
+        "Xiva",
+        "Qo‘qon",
+        "Nukus"
+      ],
+      "c": 0,
+      "e": "Samarqand So‘g‘diyona tarixining muhim markazlaridan biri bo‘lgan."
+    },
+    {
+      "q": "Qadimgi Xorazmda sug‘orish tizimlari nima uchun muhim edi?",
+      "a": [
+        "Dehqonchilikni rivojlantirish uchun",
+        "Dengiz savdosi uchun",
+        "Tog‘-kon uchun",
+        "Faqat harbiy mashq uchun"
+      ],
+      "c": 0,
+      "e": "Sug‘orish tizimlari vohalarda dehqonchilikni rivojlantirishga xizmat qilgan."
+    },
+    {
+      "q": "Qadimgi Markaziy Osiyo shaharlarida qaysi faoliyat keng rivojlangan?",
+      "a": [
+        "Savdo va hunarmandchilik",
+        "Faqat kemasozlik",
+        "Faqat baliqchilik",
+        "Faqat o‘rmonchilik"
+      ],
+      "c": 0,
+      "e": "Qadimgi shaharlarda savdo va hunarmandchilik muhim o‘rin tutgan."
+    }
+  ],
+  "temur": [
+    {
+      "q": "Amir Temur qaysi yilda tug‘ilgan?",
+      "a": [
+        "1336-yil",
+        "1405-yil",
+        "1220-yil",
+        "1441-yil"
+      ],
+      "c": 0,
+      "e": "Amir Temur 1336-yilda tug‘ilgan."
+    },
+    {
+      "q": "Amir Temurning poytaxti qaysi shahar bo‘lgan?",
+      "a": [
+        "Samarqand",
+        "Xiva",
+        "Toshkent",
+        "Buxoro"
+      ],
+      "c": 0,
+      "e": "Amir Temur davrida Samarqand davlat poytaxti bo‘lgan."
+    },
+    {
+      "q": "Amir Temur maqbarasi qanday nomlanadi?",
+      "a": [
+        "Go‘ri Amir",
+        "Registon",
+        "Ichan qal’a",
+        "Ark"
+      ],
+      "c": 0,
+      "e": "Go‘ri Amir Samarqanddagi Amir Temur maqbarasidir."
+    },
+    {
+      "q": "Amir Temur davrida Samarqandda qaysi sohalar rivojlangan?",
+      "a": [
+        "Ilm-fan va me’morchilik",
+        "Faqat chorvachilik",
+        "Faqat baliqchilik",
+        "Faqat dengizchilik"
+      ],
+      "c": 0,
+      "e": "Temuriylar davrida ilm-fan, san’at va me’morchilik yuksalgan."
+    },
+    {
+      "q": "Amir Temur qaysi unvon bilan mashhur bo‘lgan?",
+      "a": [
+        "Sohibqiron",
+        "Fir’avn",
+        "Sezar",
+        "Xoqon"
+      ],
+      "c": 0,
+      "e": "Amir Temur tarixiy manbalarda Sohibqiron nomi bilan mashhur."
+    },
+    {
+      "q": "Amir Temur qaysi shaharni obod qilishga katta e’tibor bergan?",
+      "a": [
+        "Samarqand",
+        "London",
+        "Parij",
+        "Rim"
+      ],
+      "c": 0,
+      "e": "Amir Temur Samarqandni yirik siyosiy va madaniy markazga aylantirishga katta e’tibor bergan."
+    },
+    {
+      "q": "Temuriylar davrida qaysi fanlar rivojlangan?",
+      "a": [
+        "Astronomiya va matematika",
+        "Faqat dengizchilik",
+        "Faqat vulqonshunoslik",
+        "Faqat baliqchilik"
+      ],
+      "c": 0,
+      "e": "Temuriylar davrida astronomiya, matematika va boshqa fanlar rivojlangan."
+    },
+    {
+      "q": "Mirzo Ulug‘bek kim bo‘lgan?",
+      "a": [
+        "Temuriy hukmdor va olim",
+        "Rim imperatori",
+        "Xiva xoni",
+        "Arab dengizchisi"
+      ],
+      "c": 0,
+      "e": "Mirzo Ulug‘bek Temuriy hukmdor va mashhur astronom olim bo‘lgan."
+    },
+    {
+      "q": "Ulug‘bek rasadxonasi qaysi shaharda joylashgan?",
+      "a": [
+        "Samarqand",
+        "Xiva",
+        "Buxoro",
+        "Qo‘qon"
+      ],
+      "c": 0,
+      "e": "Ulug‘bek rasadxonasi Samarqandda joylashgan."
+    },
+    {
+      "q": "Amir Temur vafot etgan yil qaysi?",
+      "a": [
+        "1405-yil",
+        "1336-yil",
+        "1399-yil",
+        "1420-yil"
+      ],
+      "c": 0,
+      "e": "Amir Temur 1405-yilda vafot etgan."
+    }
+  ],
+  "khanates": [
+    {
+      "q": "Buxoro xonligi qaysi hudud tarixida muhim o‘rin tutadi?",
+      "a": [
+        "Markaziy Osiyo",
+        "Shimoliy Amerika",
+        "Skandinaviya",
+        "Avstraliya"
+      ],
+      "c": 0,
+      "e": "Buxoro xonligi Markaziy Osiyoning muhim davlatlaridan biri bo‘lgan."
+    },
+    {
+      "q": "Xiva xonligining markazi qaysi shahar edi?",
+      "a": [
+        "Xiva",
+        "Samarqand",
+        "Toshkent",
+        "Andijon"
+      ],
+      "c": 0,
+      "e": "Xiva xonligining markazi Xiva shahri bo‘lgan."
+    },
+    {
+      "q": "Qo‘qon xonligi asosan qaysi hududda joylashgan?",
+      "a": [
+        "Farg‘ona vodiysi",
+        "Qora dengiz bo‘yi",
+        "Arabiston",
+        "Sibir"
+      ],
+      "c": 0,
+      "e": "Qo‘qon xonligi Farg‘ona vodiysi hududida muhim davlat bo‘lgan."
+    },
+    {
+      "q": "Xivadagi tarixiy ichki shahar qanday ataladi?",
+      "a": [
+        "Ichan qal’a",
+        "Go‘ri Amir",
+        "Registon",
+        "Ark"
+      ],
+      "c": 0,
+      "e": "Ichan qal’a Xivaning mashhur tarixiy ichki shahri."
+    },
+    {
+      "q": "Buxorodagi mashhur qadimiy qal’a qanday ataladi?",
+      "a": [
+        "Ark",
+        "Ichan qal’a",
+        "Oqsaroy",
+        "Ko‘kaldosh"
+      ],
+      "c": 0,
+      "e": "Ark qal’asi Buxoroning mashhur tarixiy yodgorliklaridan biridir."
+    },
+    {
+      "q": "Buxoro amirligi qaysi davlatning tarixiy davomchilaridan biri bo‘lgan?",
+      "a": [
+        "Buxoro xonligi",
+        "Rim imperiyasi",
+        "Misr podsholigi",
+        "Fransiya"
+      ],
+      "c": 0,
+      "e": "Buxoro amirligi Buxoro xonligi tarixiy an’analarining davomchisi bo‘lgan."
+    },
+    {
+      "q": "Xiva xonligi hududida qaysi tarixiy shahar mashhur?",
+      "a": [
+        "Xiva",
+        "Samarqand",
+        "Toshkent",
+        "Termiz"
+      ],
+      "c": 0,
+      "e": "Xiva xonligining markazi Xiva shahri bo‘lgan."
+    },
+    {
+      "q": "Qo‘qon xonligi qaysi vodiy bilan eng ko‘p bog‘liq?",
+      "a": [
+        "Farg‘ona vodiysi",
+        "Zarafshon vodiysi",
+        "Qashqadaryo vodiysi",
+        "Surxon vodiysi"
+      ],
+      "c": 0,
+      "e": "Qo‘qon xonligi Farg‘ona vodiysi bilan chambarchas bog‘liq."
+    },
+    {
+      "q": "Xonliklar davrida savdo uchun qaysi shaharlar muhim bo‘lgan?",
+      "a": [
+        "Buxoro, Xiva va Qo‘qon",
+        "London, Parij va Rim",
+        "Madrid, Berlin va Oslo",
+        "Tokio, Seul va Pekin"
+      ],
+      "c": 0,
+      "e": "Buxoro, Xiva va Qo‘qon mintaqadagi muhim savdo markazlari bo‘lgan."
+    },
+    {
+      "q": "Ichan qal’a qaysi shaharda joylashgan?",
+      "a": [
+        "Xiva",
+        "Buxoro",
+        "Samarqand",
+        "Toshkent"
+      ],
+      "c": 0,
+      "e": "Ichan qal’a Xiva shahrida joylashgan."
+    }
+  ],
+  "uzbekistan": [
+    {
+      "q": "O‘zbekiston Respublikasi qachon mustaqillikka erishgan?",
+      "a": [
+        "1991-yil 1-sentabr",
+        "1989-yil 21-oktabr",
+        "1992-yil 8-dekabr",
+        "1991-yil 31-avgust"
+      ],
+      "c": 3,
+      "e": "O‘zbekiston mustaqilligi 1991-yil 31-avgustda e’lon qilingan, 1-sentabr Mustaqillik kuni sifatida nishonlanadi."
+    },
+    {
+      "q": "O‘zbekiston Respublikasining davlat bayrog‘i qachon qabul qilingan?",
+      "a": [
+        "1991-yil 18-noyabr",
+        "1992-yil 8-dekabr",
+        "1992-yil 2-iyul",
+        "1991-yil 1-sentabr"
+      ],
+      "c": 0,
+      "e": "Davlat bayrog‘i 1991-yil 18-noyabrda qabul qilingan."
+    },
+    {
+      "q": "O‘zbekiston Respublikasi Konstitutsiyasi qachon qabul qilingan?",
+      "a": [
+        "1992-yil 8-dekabr",
+        "1991-yil 31-avgust",
+        "1991-yil 18-noyabr",
+        "1993-yil 1-yanvar"
+      ],
+      "c": 0,
+      "e": "Konstitutsiya 1992-yil 8-dekabrda qabul qilingan."
+    },
+    {
+      "q": "O‘zbekiston Respublikasining davlat gerbi qachon tasdiqlangan?",
+      "a": [
+        "1992-yil 2-iyul",
+        "1991-yil 18-noyabr",
+        "1992-yil 8-dekabr",
+        "1991-yil 1-sentabr"
+      ],
+      "c": 0,
+      "e": "Davlat gerbi 1992-yil 2-iyulda tasdiqlangan."
+    },
+    {
+      "q": "O‘zbekiston Respublikasining davlat madhiyasi qachon tasdiqlangan?",
+      "a": [
+        "1992-yil 10-dekabr",
+        "1991-yil 31-avgust",
+        "1992-yil 2-iyul",
+        "1990-yil 1-sentabr"
+      ],
+      "c": 0,
+      "e": "Davlat madhiyasi 1992-yil 10-dekabrda tasdiqlangan."
+    },
+    {
+      "q": "O‘zbekiston Respublikasining poytaxti qaysi shahar?",
+      "a": [
+        "Toshkent",
+        "Samarqand",
+        "Buxoro",
+        "Xiva"
+      ],
+      "c": 0,
+      "e": "Toshkent O‘zbekiston Respublikasining poytaxti."
+    },
+    {
+      "q": "O‘zbekiston davlat madhiyasi musiqasini kim bastalagan?",
+      "a": [
+        "Mutal Burhonov",
+        "Abdulla Oripov",
+        "Alisher Navoiy",
+        "Kamoliddin Behzod"
+      ],
+      "c": 0,
+      "e": "Davlat madhiyasi musiqasi Mutal Burhonov tomonidan yaratilgan."
+    },
+    {
+      "q": "Davlat madhiyasi so‘zlari muallifi kim?",
+      "a": [
+        "Abdulla Oripov",
+        "Mutal Burhonov",
+        "Amir Temur",
+        "Mirzo Ulug‘bek"
+      ],
+      "c": 0,
+      "e": "Davlat madhiyasi matni Abdulla Oripov qalamiga mansub."
+    },
+    {
+      "q": "O‘zbekiston davlat gerbidagi Humo qushi nimani ifodalaydi?",
+      "a": [
+        "Baxt va erkinlik",
+        "Faqat savdo",
+        "Faqat harbiy kuch",
+        "Faqat suv"
+      ],
+      "c": 0,
+      "e": "Humo qushi baxt va erkinlik timsoli sifatida talqin qilinadi."
+    },
+    {
+      "q": "O‘zbekistonning milliy valyutasi nima?",
+      "a": [
+        "So‘m",
+        "Dollar",
+        "Rubl",
+        "Yevro"
+      ],
+      "c": 0,
+      "e": "O‘zbekistonning milliy valyutasi so‘m."
+    }
+  ],
+  "independence": [
+    {
+      "q": "O‘zbekiston mustaqilligi qaysi sanada e’lon qilingan?",
+      "a": [
+        "31-avgust 1991-yil",
+        "1-sentabr 1991-yil",
+        "8-dekabr 1992-yil",
+        "18-noyabr 1991-yil"
+      ],
+      "c": 0,
+      "e": "Mustaqillik 1991-yil 31-avgustda e’lon qilingan."
+    },
+    {
+      "q": "O‘zbekiston Mustaqillik kuni qaysi sana?",
+      "a": [
+        "1-sentabr",
+        "8-dekabr",
+        "18-noyabr",
+        "21-mart"
+      ],
+      "c": 0,
+      "e": "1-sentabr O‘zbekiston Respublikasining Mustaqillik kuni."
+    },
+    {
+      "q": "O‘zbekiston Konstitutsiyasi nechanchi yilda qabul qilingan?",
+      "a": [
+        "1992-yilda",
+        "1991-yilda",
+        "1993-yilda",
+        "1990-yilda"
+      ],
+      "c": 0,
+      "e": "Konstitutsiya 1992-yil 8-dekabrda qabul qilingan."
+    },
+    {
+      "q": "Davlat bayrog‘idagi yarim oy nimaning ramzi sifatida talqin qilinadi?",
+      "a": [
+        "Tarixiy an’analar va yangilanish",
+        "Faqat suv",
+        "Faqat tog‘lar",
+        "Faqat hosildorlik"
+      ],
+      "c": 0,
+      "e": "Yarim oy O‘zbekistonning tarixiy an’analari va yangilanish ramzlari bilan bog‘lanadi."
+    },
+    {
+      "q": "O‘zbekiston mustaqilligining dastlabki yillarida davlat ramzlari qabul qilindimi?",
+      "a": [
+        "Ha",
+        "Yo‘q",
+        "Faqat gerb qabul qilingan",
+        "Faqat madhiyaga ruxsat berilgan"
+      ],
+      "c": 0,
+      "e": "Mustaqillikdan keyin davlat bayrog‘i, gerbi va madhiyasi qabul qilindi."
+    },
+    {
+      "q": "Mustaqillikdan keyin O‘zbekiston qanday davlat sifatida rivojlandi?",
+      "a": [
+        "Mustaqil davlat",
+        "Mustamlaka davlat",
+        "Qirollik",
+        "Imperiya"
+      ],
+      "c": 0,
+      "e": "1991-yildan O‘zbekiston mustaqil davlat sifatida rivojlanmoqda."
+    },
+    {
+      "q": "1992-yilda O‘zbekistonda qaysi muhim huquqiy hujjat qabul qilindi?",
+      "a": [
+        "Konstitutsiya",
+        "Ipak yo‘li shartnomasi",
+        "Xonlik farmoni",
+        "Rim kodeksi"
+      ],
+      "c": 0,
+      "e": "1992-yil 8-dekabrda O‘zbekiston Respublikasi Konstitutsiyasi qabul qilindi."
+    },
+    {
+      "q": "Mustaqil O‘zbekistonning davlat ramzlari qaysilar?",
+      "a": [
+        "Bayroq, gerb va madhiya",
+        "Faqat bayroq",
+        "Faqat gerb",
+        "Faqat muhr"
+      ],
+      "c": 0,
+      "e": "Davlat ramzlari bayroq, gerb va madhiyadan iborat."
+    },
+    {
+      "q": "O‘zbekiston davlat bayrog‘idagi yulduzlar soni nechta?",
+      "a": [
+        "12 ta",
+        "7 ta",
+        "8 ta",
+        "10 ta"
+      ],
+      "c": 0,
+      "e": "O‘zbekiston davlat bayrog‘ida 12 ta yulduz bor."
+    },
+    {
+      "q": "O‘zbekiston mustaqilligi qaysi asrda e’lon qilingan?",
+      "a": [
+        "XX asr",
+        "XIX asr",
+        "XVIII asr",
+        "XXI asr"
+      ],
+      "c": 0,
+      "e": "1991-yil XX asrga to‘g‘ri keladi."
+    }
+  ],
+  "silkroad": [
+    {
+      "q": "Buyuk Ipak yo‘li nomi nimani anglatadi?",
+      "a": [
+        "Qadimgi savdo va madaniy yo‘llar tizimi",
+        "Faqat harbiy yo‘l",
+        "Faqat dengiz yo‘li",
+        "Faqat pochta yo‘li"
+      ],
+      "c": 0,
+      "e": "Buyuk Ipak yo‘li Sharq va G‘arbni bog‘lagan savdo-madaniy yo‘llar tizimi edi."
+    },
+    {
+      "q": "Samarqand Buyuk Ipak yo‘lida qanday ahamiyatga ega bo‘lgan?",
+      "a": [
+        "Muhim savdo va madaniyat markazi",
+        "Faqat harbiy qal’a",
+        "Dengiz porti",
+        "Faqat qishloq"
+      ],
+      "c": 0,
+      "e": "Samarqand Ipak yo‘lining muhim shaharlari va madaniy markazlaridan biri bo‘lgan."
+    },
+    {
+      "q": "Buxoro Ipak yo‘li tarixida nima bilan mashhur?",
+      "a": [
+        "Savdo va hunarmandchilik markazi",
+        "Dengiz floti",
+        "Muzliklar",
+        "Okean porti"
+      ],
+      "c": 0,
+      "e": "Buxoro qadimdan savdo, hunarmandchilik va ilm markazi sifatida tanilgan."
+    },
+    {
+      "q": "Ipak yo‘li orqali qaysi mahsulot nomi ayniqsa mashhur bo‘lgan?",
+      "a": [
+        "Ipak",
+        "Neft tankerlari",
+        "Samolyot",
+        "Kompyuter"
+      ],
+      "c": 0,
+      "e": "Ipak qadimgi savdoning eng mashhur mahsulotlaridan biri bo‘lgan."
+    },
+    {
+      "q": "Ipak yo‘li faqat tovar almashinuvi uchun xizmat qilganmi?",
+      "a": [
+        "Yo‘q, madaniyat va g‘oyalar ham tarqalgan",
+        "Ha, faqat tovar uchun",
+        "Faqat urush uchun",
+        "Faqat dehqonchilik uchun"
+      ],
+      "c": 0,
+      "e": "Ipak yo‘li orqali dinlar, ilmiy bilimlar, san’at va madaniyatlar ham tarqalgan."
+    },
+    {
+      "q": "Buyuk Ipak yo‘li O‘zbekistonning qaysi shaharlari orqali o‘tgan?",
+      "a": [
+        "Samarqand va Buxoro",
+        "London va Parij",
+        "Moskva va Berlin",
+        "Madrid va Rim"
+      ],
+      "c": 0,
+      "e": "Samarqand va Buxoro Ipak yo‘lining muhim shaharlari bo‘lgan."
+    },
+    {
+      "q": "Ipak yo‘li orqali qaysi sohalarda tajriba almashilgan?",
+      "a": [
+        "Ilm-fan va madaniyatda",
+        "Faqat sportda",
+        "Faqat aviatsiyada",
+        "Faqat kompyuter texnologiyasida"
+      ],
+      "c": 0,
+      "e": "Ipak yo‘li ilm-fan, san’at, din va madaniyat almashinuvini kuchaytirgan."
+    },
+    {
+      "q": "Karvonlar Buyuk Ipak yo‘lida nimadan foydalangan?",
+      "a": [
+        "Tuya va boshqa transport hayvonlaridan",
+        "Samolyotdan",
+        "Poyezddan",
+        "Avtomobildan"
+      ],
+      "c": 0,
+      "e": "Qadimgi karvonlarda tuyalar va boshqa hayvonlar asosiy transport vositalaridan bo‘lgan."
+    },
+    {
+      "q": "Ipak yo‘li O‘zbekiston tarixiga qanday ta’sir ko‘rsatgan?",
+      "a": [
+        "Savdo va madaniyat rivojiga yordam bergan",
+        "Faqat urushlarni kuchaytirgan",
+        "Shaharlarni yo‘q qilgan",
+        "Hech qanday ta’sir qilmagan"
+      ],
+      "c": 0,
+      "e": "Savdo yo‘llari shaharlar, hunarmandchilik va madaniyatning rivojiga katta ta’sir ko‘rsatgan."
+    },
+    {
+      "q": "Samarqanddagi Registon nimasi bilan mashhur?",
+      "a": [
+        "Tarixiy me’moriy majmua",
+        "Dengiz porti",
+        "Harbiy samolyot bazasi",
+        "Zavod"
+      ],
+      "c": 0,
+      "e": "Registon Samarqandning mashhur tarixiy me’moriy majmualaridan biridir."
+    }
+  ]
+};
+
+const grammarQuestionSets = {
+
+comparatives: [
+
+{
+q:"This book is ___ than that one.",
+a:["interesting","more interesting","most interesting","interestingly"],
+c:1,
+e:"For long adjectives, use 'more + adjective' in the comparative form."
+},
+
+{
+q:"Mount Everest is the ___ mountain in the world.",
+a:["high","higher","highest","the highest"],
+c:3,
+e:"The superlative form requires 'the + superlative'."
+},
+
+{
+q:"My sister is ___ than me.",
+a:["tall","taller","the tallest","more tall"],
+c:1,
+e:"Short adjectives usually add -er."
+},
+
+{
+q:"This is the ___ movie I have ever seen.",
+a:["funny","funniest","the funniest","more funny"],
+c:2,
+e:"Use 'the + superlative' for the highest degree."
+},
+
+{
+q:"Today is ___ than yesterday.",
+a:["hot","hotter","the hottest","more hotter"],
+c:1,
+e:"The comparative of 'hot' is 'hotter'."
+},
+
+{
+q:"Elephants are ___ than dogs.",
+a:["big","bigger","biggest","the bigger"],
+c:1,
+e:"Use the comparative form 'bigger'."
+},
+
+{
+q:"She is the ___ student in the class.",
+a:["smart","smarter","smartest","the smartest"],
+c:3,
+e:"The superlative needs 'the'."
+},
+
+{
+q:"My bag is ___ than yours.",
+a:["heavy","heavier","heaviest","more heavy"],
+c:1,
+e:"For adjectives ending in -y, change y to i and add -er."
+},
+
+{
+q:"This exercise is ___ than the last one.",
+a:["easy","easier","easiest","more easy"],
+c:1,
+e:"'Easy' becomes 'easier'."
+},
+
+{
+q:"Winter is the ___ season here.",
+a:["cold","colder","coldest","the coldest"],
+c:3,
+e:"Use 'the coldest'."
+},
+
+{
+q:"A cheetah is ___ than a lion.",
+a:["fast","faster","fastest","the fastest"],
+c:1,
+e:"Comparative: faster."
+},
+
+{
+q:"This chair is ___ than that one.",
+a:["comfortable","more comfortable","most comfortable","comfortabler"],
+c:1,
+e:"Long adjectives use 'more'."
+},
+
+{
+q:"He is the ___ player on the team.",
+a:["good","better","best","the best"],
+c:3,
+e:"'Good' → better → the best."
+},
+
+{
+q:"Today I'm feeling ___.",
+a:["happy","happier","happiest","the happiest"],
+c:0,
+e:"No comparison is made, so use the basic adjective."
+},
+
+{
+q:"My house is ___ than yours.",
+a:["modern","more modern","most modern","modernest"],
+c:1,
+e:"Use 'more modern'."
+},
+
+{
+q:"This road is the ___ one in the city.",
+a:["long","longer","longest","the longest"],
+c:3,
+e:"Use the superlative with 'the'."
+},
+
+{
+q:"A rabbit is ___ than a turtle.",
+a:["quick","quicker","quickest","the quickest"],
+c:1,
+e:"Comparative: quicker."
+},
+
+{
+q:"English is ___ than Mathematics for me.",
+a:["easy","easier","easiest","the easiest"],
+c:1,
+e:"Use the comparative form."
+},
+
+{
+q:"This phone is ___ than my old one.",
+a:["expensive","more expensive","most expensive","expensiver"],
+c:1,
+e:"Long adjectives use 'more'."
+},
+
+{
+q:"She bought the ___ dress in the shop.",
+a:["beautiful","more beautiful","most beautiful","the most beautiful"],
+c:3,
+e:"Superlative: the most beautiful."
+},
+
+{
+q:"Summer is ___ than spring.",
+a:["warm","warmer","warmest","the warmest"],
+c:1,
+e:"Comparative: warmer."
+},
+
+{
+q:"The blue whale is the ___ animal on Earth.",
+a:["large","larger","largest","the largest"],
+c:3,
+e:"Use the superlative form."
+},
+
+{
+q:"Coffee is ___ than tea for me.",
+a:["good","better","best","the best"],
+c:1,
+e:"Comparative of 'good' is 'better'."
+},
+
+{
+q:"My little brother is ___ than I am.",
+a:["young","younger","youngest","the youngest"],
+c:1,
+e:"Comparative: younger."
+},
+
+{
+q:"This is the ___ test we've had.",
+a:["difficult","more difficult","most difficult","the most difficult"],
+c:3,
+e:"Use 'the most difficult'."
+},
+
+{
+q:"Cats are usually ___ than mice.",
+a:["strong","stronger","strongest","the strongest"],
+c:1,
+e:"Comparative: stronger."
+},
+
+{
+q:"My room is ___ than before.",
+a:["clean","cleaner","cleanest","the cleanest"],
+c:1,
+e:"Comparative: cleaner."
+},
+
+{
+q:"She is the ___ girl in our class.",
+a:["kind","kinder","kindest","the kindest"],
+c:3,
+e:"Superlative: the kindest."
+},
+
+{
+q:"This question is ___ than the previous one.",
+a:["hard","harder","hardest","the hardest"],
+c:1,
+e:"Comparative: harder."
+},
+
+{
+q:"He is the ___ person I know.",
+a:["friendly","friendlier","friendliest","the friendliest"],
+c:3,
+e:"Superlative: the friendliest."
+}
+
+],
+
+
+/* ================= MODAL VERBS ================= */
+
+modal:[
+
+{
+q:"You ___ respect your parents.",
+a:["should","would","could","might"],
+c:0,
+e:"'Should' is used to give advice."
+},
+
+{
+q:"___ I borrow your pen?",
+a:["Must","May","Should","Have"],
+c:1,
+e:"'May' is used to ask for permission."
+},
+
+{
+q:"You ___ not smoke here.",
+a:["can","must","would","could"],
+c:0,
+e:"'Can' can be used to express permission or prohibition when negative."
+},
+
+{
+q:"She ___ speak three languages.",
+a:["can","must","should","would"],
+c:0,
+e:"'Can' expresses ability."
+},
+
+{
+q:"We ___ finish this today.",
+a:["might","must","could","would"],
+c:1,
+e:"'Must' expresses strong necessity."
+},
+
+{
+q:"It ___ rain tomorrow.",
+a:["might","must","should","can"],
+c:0,
+e:"'Might' expresses possibility."
+},
+
+{
+q:"When I was young, I ___ swim very well.",
+a:["can","could","must","should"],
+c:1,
+e:"'Could' expresses past ability."
+},
+
+{
+q:"You ___ see a doctor if you feel sick.",
+a:["should","might","would","can"],
+c:0,
+e:"'Should' gives advice."
+},
+
+{
+q:"___ you help me with this exercise?",
+a:["Could","Must","May","Should"],
+c:0,
+e:"'Could' is commonly used for polite requests."
+},
+
+{
+q:"Students ___ wear uniforms at this school.",
+a:["have to","might","could","would"],
+c:0,
+e:"'Have to' expresses an obligation."
+}
+
+],
+
+
+/* ================= HAVE TO ================= */
+
+have:[
+
+{
+q:"I ___ go to school every day.",
+a:["has to","have to","having to","had"],
+c:1,
+e:"Use 'have to' with I, you, we and they."
+},
+
+{
+q:"She ___ study for the exam.",
+a:["have to","has to","having to","have"],
+c:1,
+e:"Use 'has to' with he, she and it."
+},
+
+{
+q:"They ___ clean their room.",
+a:["has to","have to","having","had to"],
+c:1,
+e:"'They' takes 'have to'."
+},
+
+{
+q:"He ___ wake up early.",
+a:["have to","has to","having to","have"],
+c:1,
+e:"'He' takes 'has to'."
+},
+
+{
+q:"We ___ finish our homework.",
+a:["has to","have to","having","had"],
+c:1,
+e:"'We' takes 'have to'."
+},
+
+{
+q:"My brother ___ wear glasses.",
+a:["have to","has to","having","have"],
+c:1,
+e:"'My brother' is singular, so use 'has to'."
+},
+
+{
+q:"You ___ be careful.",
+a:["has to","have to","having","had"],
+c:1,
+e:"Use 'have to' with 'you'."
+},
+
+{
+q:"Anna ___ work on Saturday.",
+a:["have to","has to","having","have"],
+c:1,
+e:"Anna is singular, so use 'has to'."
+},
+
+{
+q:"The students ___ arrive at 8 o'clock.",
+a:["has to","have to","having","had"],
+c:1,
+e:"'Students' is plural, so use 'have to'."
+},
+
+{
+q:"My father ___ drive to work.",
+a:["have to","has to","having","have"],
+c:1,
+e:"'My father' is singular, so use 'has to'."
+}
+
+],
+
+
+/* ================= CAN / COULD ================= */
+
+can:[
+
+{
+q:"I ___ swim very well.",
+a:["can","must","should","would"],
+c:0,
+e:"'Can' expresses present ability."
+},
+
+{
+q:"When I was five, I ___ ride a bike.",
+a:["can","could","must","should"],
+c:1,
+e:"'Could' expresses ability in the past."
+},
+
+{
+q:"___ you help me, please?",
+a:["Could","Must","Should","Might"],
+c:0,
+e:"'Could' is used for polite requests."
+},
+
+{
+q:"She ___ speak English.",
+a:["can","could","must","would"],
+c:0,
+e:"'Can' expresses ability."
+},
+
+{
+q:"We ___ go to the park tomorrow.",
+a:["could","must","should","have"],
+c:0,
+e:"'Could' can express a possibility."
+},
+
+{
+q:"___ I use your phone?",
+a:["Can","Must","Should","Would"],
+c:0,
+e:"'Can' can be used to ask for permission."
+},
+
+{
+q:"He ___ play football when he was young.",
+a:["can","could","must","should"],
+c:1,
+e:"Use 'could' for past ability."
+},
+
+{
+q:"Birds ___ fly.",
+a:["can","must","should","would"],
+c:0,
+e:"'Can' expresses ability."
+},
+
+{
+q:"___ you open the window?",
+a:["Could","Must","Should","Might"],
+c:0,
+e:"'Could' makes the request polite."
+},
+
+{
+q:"I ___ not understand the question.",
+a:["can","could","must","should"],
+c:0,
+e:"'Can not / can't' expresses inability."
+}
+
+],
+
+
+/* ================= MUST ================= */
+
+must:[
+
+{
+q:"You ___ wear a seat belt.",
+a:["must","might","could","would"],
+c:0,
+e:"'Must' expresses strong necessity."
+},
+
+{
+q:"Students ___ do their homework.",
+a:["must","could","might","would"],
+c:0,
+e:"'Must' expresses obligation."
+},
+
+{
+q:"You ___ be quiet in the library.",
+a:["must","can","might","would"],
+c:0,
+e:"'Must' expresses a rule or obligation."
+},
+
+{
+q:"We ___ leave now.",
+a:["must","could","might","would"],
+c:0,
+e:"'Must' shows that something is necessary."
+},
+
+{
+q:"You ___ listen to your teacher.",
+a:["must","could","might","would"],
+c:0,
+e:"'Must' expresses obligation."
+},
+
+{
+q:"Visitors ___ show their ID.",
+a:["must","could","would","might"],
+c:0,
+e:"'Must' expresses a requirement."
+},
+
+{
+q:"I ___ finish this work today.",
+a:["must","could","might","would"],
+c:0,
+e:"'Must' expresses strong necessity."
+},
+
+{
+q:"You ___ follow the rules.",
+a:["must","might","could","would"],
+c:0,
+e:"'Must' expresses obligation."
+},
+
+{
+q:"We ___ be careful.",
+a:["must","could","might","would"],
+c:0,
+e:"'Must' expresses necessity."
+},
+
+{
+q:"Everyone ___ respect the law.",
+a:["must","could","might","would"],
+c:0,
+e:"'Must' expresses a strong obligation."
+}
+
+],
+
+
+/* ================= SHOULD ================= */
+
+should:[
+
+{
+q:"You ___ eat healthy food.",
+a:["should","mustn't","could","would"],
+c:0,
+e:"'Should' is used to give advice."
+},
+
+{
+q:"You ___ study more.",
+a:["should","might","would","can"],
+c:0,
+e:"'Should' gives advice."
+},
+
+{
+q:"She ___ see a doctor.",
+a:["should","could","would","might"],
+c:0,
+e:"'Should' is used for recommendations."
+},
+
+{
+q:"We ___ help our friends.",
+a:["should","might","would","can"],
+c:0,
+e:"'Should' gives advice."
+},
+
+{
+q:"You ___ be polite.",
+a:["should","could","might","would"],
+c:0,
+e:"'Should' gives advice."
+},
+
+{
+q:"He ___ apologize.",
+a:["should","could","might","would"],
+c:0,
+e:"'Should' expresses what is advisable."
+},
+
+{
+q:"They ___ arrive early.",
+a:["should","could","might","would"],
+c:0,
+e:"'Should' is used for advice or expectation."
+},
+
+{
+q:"You ___ drink enough water.",
+a:["should","might","would","could"],
+c:0,
+e:"'Should' gives advice."
+},
+
+{
+q:"I think you ___ try again.",
+a:["should","could","might","would"],
+c:0,
+e:"'Should' is used to make a recommendation."
+},
+
+{
+q:"We ___ respect other people.",
+a:["should","could","might","would"],
+c:0,
+e:"'Should' expresses advice."
+}
+
+]
+
+};
+
+const questionSets = {
+    ...historyQuestionSets,
+    ...grammarQuestionSets
+};
+
+/* =====================================================
+   SUBJECTS AND TOPICS
+===================================================== */
+
+
+/* ================= MATHEMATICS ================= */
+const mathQuestionSets = {
+    arithmetic: [
+        {q:"Hisoblang: 25 + 37 = ?", a:["52","62","72","60"], c:1, e:"25 + 37 = 62."},
+        {q:"Hisoblang: 84 − 29 = ?", a:["55","65","45","53"], c:0, e:"84 − 29 = 55."},
+        {q:"Hisoblang: 7 × 8 = ?", a:["54","56","64","48"], c:1, e:"7 × 8 = 56."},
+        {q:"Hisoblang: 72 ÷ 9 = ?", a:["6","7","8","9"], c:2, e:"72 ÷ 9 = 8."},
+        {q:"Qaysi son 3 ga bo‘linadi?", a:["124","135","142","151"], c:1, e:"135 raqamlari yig‘indisi 1+3+5=9, shuning uchun 3 ga bo‘linadi."},
+        {q:"1/2 + 1/4 = ?", a:["2/6","3/4","1/6","2/4"], c:1, e:"1/2 = 2/4, demak 2/4 + 1/4 = 3/4."},
+        {q:"0,5 + 0,25 = ?", a:["0,65","0,70","0,75","0,80"], c:2, e:"0,5 + 0,25 = 0,75."},
+        {q:"200 ning 15% i nechaga teng?", a:["20","25","30","35"], c:2, e:"200 × 0,15 = 30."},
+        {q:"Agar x + 7 = 19 bo‘lsa, x nechaga teng?", a:["10","11","12","13"], c:2, e:"x = 19 − 7 = 12."},
+        {q:"3² + 4² = ?", a:["12","25","49","24"], c:1, e:"3² + 4² = 9 + 16 = 25."}
+    ],
+    algebra: [
+        {q:"Agar 2x = 18 bo‘lsa, x = ?", a:["6","8","9","12"], c:2, e:"x = 18 ÷ 2 = 9."},
+        {q:"Tenglamani yeching: x − 5 = 13", a:["8","18","19","20"], c:1, e:"x = 13 + 5 = 18."},
+        {q:"Tenglamani yeching: 3x + 2 = 14", a:["3","4","5","6"], c:1, e:"3x = 12, x = 4."},
+        {q:"x² = 49 tenglamaning musbat ildizi?", a:["5","6","7","8"], c:2, e:"7² = 49."},
+        {q:"2(x + 3) = 16 bo‘lsa, x = ?", a:["4","5","6","7"], c:1, e:"x + 3 = 8, shuning uchun x = 5."},
+        {q:"Ifodani soddalashtiring: 3x + 5x", a:["8","8x","15x","2x"], c:1, e:"Bir xil hadlar qo‘shiladi: 3x + 5x = 8x."},
+        {q:"(x + 2)(x + 3) ning ochilgan ko‘rinishi?", a:["x²+5x+6","x²+6","x²+5x","x²+6x+5"], c:0, e:"Ko‘paytirish natijasi x² + 5x + 6."},
+        {q:"x² − 9 ning ko‘paytuvchilarga ajratilishi?", a:["(x−9)(x+1)","(x−3)(x+3)","(x−9)(x+9)","(x−3)²"], c:1, e:"x² − 3² = (x−3)(x+3)."},
+        {q:"Agar x = 4 bo‘lsa, 2x² − 3 = ?", a:["25","29","32","35"], c:1, e:"2×16 − 3 = 29."},
+        {q:"Tenglamani yeching: 5x − 10 = 0", a:["1","2","3","4"], c:1, e:"5x = 10, x = 2."}
+    ],
+    geometry: [
+        {q:"To‘g‘ri to‘rtburchakning tomonlari 6 sm va 4 sm. Yuzi nechaga teng?", a:["10 sm²","20 sm²","24 sm²","28 sm²"], c:2, e:"S = a×b = 6×4 = 24 sm²."},
+        {q:"Tomoni 5 sm bo‘lgan kvadratning perimetri?", a:["10 sm","15 sm","20 sm","25 sm"], c:2, e:"P = 4×5 = 20 sm."},
+        {q:"Uchburchak ichki burchaklari yig‘indisi nechaga teng?", a:["90°","180°","270°","360°"], c:1, e:"Har qanday uchburchak ichki burchaklari yig‘indisi 180°."},
+        {q:"Radiusi 3 sm bo‘lgan aylananing diametri?", a:["3 sm","6 sm","9 sm","12 sm"], c:1, e:"Diametr = 2r = 6 sm."},
+        {q:"To‘g‘ri burchak necha gradus?", a:["45°","90°","120°","180°"], c:1, e:"To‘g‘ri burchak 90° ga teng."},
+        {q:"Kvadratning yuzi 49 sm². Uning tomoni?", a:["6 sm","7 sm","8 sm","9 sm"], c:1, e:"√49 = 7 sm."},
+        {q:"Parallelogramm yuzasi qaysi formula bilan topiladi?", a:["a+b","a×h","2(a+b)","a²"], c:1, e:"Parallelogramm yuzi S = a×h."},
+        {q:"Agar uchburchakning ikki burchagi 50° va 60° bo‘lsa, uchinchi burchak?", a:["60°","70°","80°","90°"], c:1, e:"180° − 50° − 60° = 70°."},
+        {q:"To‘g‘ri to‘rtburchak perimetri 30 sm, bir tomoni 10 sm. Ikkinchi tomoni?", a:["5 sm","10 sm","15 sm","20 sm"], c:0, e:"2(10+b)=30, demak b=5 sm."},
+        {q:"Doiraning radiusi 5 sm bo‘lsa, diametri?", a:["2,5 sm","5 sm","10 sm","25 sm"], c:2, e:"d = 2r = 10 sm."}
+    ]
+};
+
+Object.assign(questionSets, mathQuestionSets);
+
+const subjectData = {
+    history: {
+        title: "🇺🇿 O‘zbekiston Tarixi",
+        subtitle: "Tarix mavzusini tanlang va testni boshlang",
+        topics: [
+            ["ancient","🏛️","Qadimgi O‘zbekiston"],
+            ["temur","⚔️","Amir Temur davri"],
+            ["khanates","👑","Xonliklar tarixi"],
+            ["uzbekistan","🇺🇿","O‘zbekiston tarixi"],
+            ["independence","📜","Mustaqillik tarixi"],
+            ["silkroad","🏺","Buyuk Ipak yo‘li"]
+        ]
+    },
+    math: {
+        title: "➗ Matematika",
+        subtitle: "Matematika mavzusini tanlang va testni boshlang",
+        topics: [
+            ["arithmetic","🔢","Arifmetika"],
+            ["algebra","📐","Algebra"],
+            ["geometry","📏","Geometriya"]
+        ]
+    },
+    english: {
+        title: "🇬🇧 English Grammar",
+        subtitle: "Choose a grammar topic and start your test",
+        topics: [
+            ["comparatives","📈","Comparatives & Superlatives"],
+            ["modal","💬","Modal Verbs"],
+            ["have","📘","Have to / Has to"],
+            ["can","⚡","Can / Could"],
+            ["must","🔴","Must"],
+            ["should","🟢","Should"]
+        ]
+    }
+};
+
+let currentSubject = "";
+let current = 0;
+let score = 0;
+let selected = null;
+let mistakes = [];
+let currentQuiz = [];
+let currentTopic = "";
+
+/* =====================================================
+   SUBJECT SELECTOR
+===================================================== */
+
+function openSubject(subject){
+    currentSubject = subject;
+
+    document.getElementById("subjectHome").style.display = "none";
+    document.getElementById("topicHome").style.display = "block";
+    document.getElementById("quiz").style.display = "none";
+    document.getElementById("result").style.display = "none";
+    document.getElementById("whiteboard").style.display = "none";
+
+    const data = subjectData[subject];
+    document.getElementById("subjectTitle").innerText = data.title;
+    document.getElementById("subjectSubtitle").innerText = data.subtitle;
+
+    const list = document.getElementById("topicList");
+    list.innerHTML = data.topics.map(t => `
+        <div class="topic" onclick="startQuiz('${t[0]}',this)">
+            ${t[1]}<br>${t[2]}
+        </div>
+    `).join("");
+}
+
+function backToSubjects(){
+    document.getElementById("topicHome").style.display = "none";
+    document.getElementById("quiz").style.display = "none";
+    document.getElementById("result").style.display = "none";
+    document.getElementById("whiteboard").style.display = "none";
+    document.getElementById("subjectHome").style.display = "block";
+    updateStats();
+}
+
+/* =====================================================
+   TOPIC NAMES
+===================================================== */
+
+const topicNames = {
+    arithmetic:"🔢 Arifmetika",
+    algebra:"📐 Algebra",
+    geometry:"📏 Geometriya",
+
+    ancient:"🏛️ Qadimgi O‘zbekiston",
+    temur:"⚔️ Amir Temur davri",
+    khanates:"👑 Xonliklar tarixi",
+    uzbekistan:"🇺🇿 O‘zbekiston tarixi",
+    independence:"📜 Mustaqillik tarixi",
+    silkroad:"🏺 Buyuk Ipak yo‘li",
+
+    comparatives:"📈 Comparatives & Superlatives",
+    modal:"💬 Modal Verbs",
+    have:"📘 Have to / Has to",
+    can:"⚡ Can / Could",
+    must:"🔴 Must",
+    should:"🟢 Should"
+};
+
+/* =====================================================
+   START QUIZ
+===================================================== */
+
+function startQuiz(topic, element){
+    currentTopic = topic;
+    currentQuiz = questionSets[topic];
+
+    if(!currentQuiz || !currentQuiz.length){
+        alert("Bu mavzuda savollar topilmadi.");
+        return;
+    }
+
+    current = 0;
+    score = 0;
+    selected = null;
+    mistakes = [];
+
+    document.getElementById("subjectHome").style.display = "none";
+    document.getElementById("topicHome").style.display = "none";
+    document.getElementById("result").style.display = "none";
+    document.getElementById("quiz").style.display = "block";
+
+    document.getElementById("topicName").innerText = topicNames[topic];
+
+    loadQuestion();
+}
+
+function loadQuestion(){
+    const total = currentQuiz.length;
+
+    document.getElementById("progressText").innerText =
+        "Savol " + (current + 1) + " / " + total;
+
+    const percent = Math.round((current / total) * 100);
+    document.getElementById("progressFill").style.width = percent + "%";
+
+    const livePercent = current === 0 ? 0 : Math.round((score / current) * 100);
+
+    document.getElementById("liveScore").innerText =
+        "Natija: " + livePercent + "%";
+
+    document.getElementById("question").innerText =
+        currentQuiz[current].q;
+
+    let html = "";
+
+    currentQuiz[current].a.forEach((answer,index)=>{
+        html += `
+        <div class="option" onclick="selectAnswer(${index},this)">
+            <strong>${String.fromCharCode(65+index)}.</strong>
+            ${answer}
+        </div>`;
+    });
+
+    document.getElementById("answers").innerHTML = html;
+    selected = null;
+}
+
+function selectAnswer(index, element){
+    document.querySelectorAll(".option")
+        .forEach(x => x.classList.remove("selected"));
+
+    element.classList.add("selected");
+    selected = index;
+}
+
+function nextQuestion(){
+    if(selected === null){
+        alert("Iltimos, javobni tanlang!");
+        return;
+    }
+
+    const question = currentQuiz[current];
+
+    if(selected === question.c){
+        score++;
+    } else {
+        mistakes.push({
+            question: question.q,
+            your: question.a[selected],
+            correct: question.a[question.c],
+            explain: question.e
+        });
+    }
+
+    current++;
+
+    if(current >= currentQuiz.length){
+        finishQuiz();
+        return;
+    }
+
+    loadQuestion();
+}
+
+/* =====================================================
+   FINISH QUIZ
+===================================================== */
+
+function finishQuiz(){
+    const total = currentQuiz.length;
+    const percent = Math.round((score / total) * 100);
+
+    document.getElementById("quiz").style.display = "none";
+    document.getElementById("result").style.display = "block";
+
+    document.getElementById("finalScore").innerText = percent + "%";
+    document.getElementById("correctCount").innerText = score;
+    document.getElementById("wrongCount").innerText = mistakes.length;
+    document.getElementById("totalQuestions").innerText = total;
+
+    let message;
+
+    if(percent === 100) {
+        message = "🏆 Mukammal! Ajoyib natija!";
+    } else if(percent >= 90) {
+        message = "🌟 Ajoyib natija!";
+    } else if(percent >= 75) {
+        message = "👏 Juda yaxshi!";
+    } else if(percent >= 60) {
+        message = "👍 Yaxshi! Mashq qilishda davom eting.";
+    } else {
+        message = "📚 O‘qishni davom ettiring va yana urinib ko‘ring!";
+    }
+
+    document.getElementById("resultMessage").innerText = message;
+
+    let mistakesHTML = "";
+
+    if(mistakes.length === 0){
+        mistakesHTML = `
+        <div style="
+            margin-top:30px;
+            padding:20px;
+            background:#dcfce7;
+            border-radius:14px;
+            color:#166534;
+            font-weight:bold;">
+            🎉 Siz xato qilmadingiz!
+        </div>`;
+    } else {
+        mistakesHTML = `<h2 style="margin-top:35px;">❌ Xatolaringiz</h2>`;
+
+        mistakes.forEach((m,index)=>{
+            mistakesHTML += `
+            <div class="mistake">
+                <h3>❌ Xato ${index+1}</h3>
+                <p><b>Savol:</b><br>${m.question}</p>
+                <p class="your"><b>Sizning javobingiz:</b> ${m.your}</p>
+                <p class="correct"><b>To‘g‘ri javob:</b> ${m.correct}</p>
+                <div class="explanation">
+                    <b>💡 Izoh:</b><br>${m.explain}
+                </div>
+            </div>`;
+        });
+    }
+
+    document.getElementById("mistakes").innerHTML = mistakesHTML;
+    saveResult(percent);
+}
+
+function saveResult(percent){
+    let results = JSON.parse(localStorage.getItem("quizResults")) || [];
+
+    results.push({
+        subject: currentSubject,
+        topic: currentTopic,
+        score: percent,
+        date: new Date().toLocaleDateString()
+    });
+
+    localStorage.setItem("quizResults", JSON.stringify(results));
+    updateStats();
+}
+
+function updateStats(){
+    let results = JSON.parse(localStorage.getItem("quizResults")) || [];
+
+    if(results.length === 0){
+        document.getElementById("testsCompleted").innerText = "0";
+        document.getElementById("averageScore").innerText = "0%";
+        document.getElementById("bestScore").innerText = "0%";
+        return;
+    }
+
+    const scores = results.map(x => x.score);
+    const average = Math.round(scores.reduce((a,b)=>a+b,0) / scores.length);
+    const best = Math.max(...scores);
+
+    document.getElementById("testsCompleted").innerText = results.length;
+    document.getElementById("averageScore").innerText = average + "%";
+    document.getElementById("bestScore").innerText = best + "%";
+}
+
+function backToTopics(){
+    document.getElementById("quiz").style.display = "none";
+    document.getElementById("result").style.display = "none";
+    document.getElementById("topicHome").style.display = "block";
+    openSubject(currentSubject);
+}
+
+/* =====================================================
+   INTERACTIVE WHITEBOARD
+===================================================== */
+
+let boardCanvas;
+let boardCtx;
+let boardDrawing = false;
+let boardTool = "draw";
+let boardHistory = [];
+let boardLastX = 0;
+let boardLastY = 0;
+
+function initWhiteboard(){
+    boardCanvas = document.getElementById("boardCanvas");
+    if(!boardCanvas) return;
+
+    const rect = boardCanvas.getBoundingClientRect();
+    const ratio = window.devicePixelRatio || 1;
+
+    boardCanvas.width = rect.width * ratio;
+    boardCanvas.height = rect.height * ratio;
+
+    boardCtx = boardCanvas.getContext("2d");
+    boardCtx.scale(ratio, ratio);
+
+    boardCtx.fillStyle = "white";
+    boardCtx.fillRect(0,0,rect.width,rect.height);
+
+    boardCtx.lineCap = "round";
+    boardCtx.lineJoin = "round";
+
+    boardCanvas.addEventListener("pointerdown", boardPointerDown);
+    boardCanvas.addEventListener("pointermove", boardPointerMove);
+    boardCanvas.addEventListener("pointerup", boardPointerUp);
+    boardCanvas.addEventListener("pointercancel", boardPointerUp);
+}
+
+function saveBoardState(){
+    if(!boardCanvas) return;
+    boardHistory.push(boardCanvas.toDataURL());
+    if(boardHistory.length > 30) boardHistory.shift();
+}
+
+function restoreBoardImage(data){
+    const img = new Image();
+
+    img.onload = () => {
+        const rect = boardCanvas.getBoundingClientRect();
+        boardCtx.clearRect(0,0,rect.width,rect.height);
+        boardCtx.drawImage(img,0,0,rect.width,rect.height);
+    };
+
+    img.src = data;
+}
+
+function getBoardPoint(e){
+    const rect = boardCanvas.getBoundingClientRect();
+
+    return {
+        x:e.clientX - rect.left,
+        y:e.clientY - rect.top
+    };
+}
+
+function boardPointerDown(e){
+    if(boardTool === "text"){
+        const p = getBoardPoint(e);
+        const text = prompt("Matnni kiriting:");
+
+        if(text && text.trim()){
+            saveBoardState();
+
+            boardCtx.fillStyle =
+                document.getElementById("boardColor").value;
+
+            boardCtx.font =
+                `${Math.max(14, Number(document.getElementById("boardSize").value) * 4)}px Arial`;
+
+            boardCtx.fillText(text.trim(), p.x, p.y);
+        }
+
+        return;
+    }
+
+    saveBoardState();
+    boardDrawing = true;
+
+    const p = getBoardPoint(e);
+    boardLastX = p.x;
+    boardLastY = p.y;
+
+    boardCanvas.setPointerCapture?.(e.pointerId);
+}
+
+function boardPointerMove(e){
+    if(!boardDrawing) return;
+
+    const p = getBoardPoint(e);
+
+    boardCtx.beginPath();
+    boardCtx.moveTo(boardLastX,boardLastY);
+    boardCtx.lineTo(p.x,p.y);
+
+    const size =
+        Number(document.getElementById("boardSize").value);
+
+    boardCtx.lineWidth = size;
+
+    if(boardTool === "eraser"){
+        boardCtx.strokeStyle = "white";
+    } else {
+        boardCtx.strokeStyle =
+            document.getElementById("boardColor").value;
+    }
+
+    boardCtx.stroke();
+
+    boardLastX = p.x;
+    boardLastY = p.y;
+}
+
+function boardPointerUp(){
+    boardDrawing = false;
+}
+
+function setBoardTool(tool){
+    boardTool = tool;
+}
+
+function undoBoard(){
+    if(boardHistory.length === 0) return;
+
+    const previous = boardHistory.pop();
+    restoreBoardImage(previous);
+}
+
+function clearBoard(){
+    if(!boardCanvas) return;
+
+    saveBoardState();
+
+    const rect = boardCanvas.getBoundingClientRect();
+
+    boardCtx.fillStyle = "white";
+    boardCtx.fillRect(0,0,rect.width,rect.height);
+}
+
+function saveBoard(){
+    if(!boardCanvas) return;
+
+    const link = document.createElement("a");
+    link.download = "my-whiteboard.png";
+    link.href = boardCanvas.toDataURL("image/png");
+    link.click();
+}
+
+function openWhiteboard(){
+    document.getElementById("subjectHome").style.display = "none";
+    document.getElementById("topicHome").style.display = "none";
+    document.getElementById("quiz").style.display = "none";
+    document.getElementById("result").style.display = "none";
+    document.getElementById("whiteboard").style.display = "block";
+
+    if(!boardCanvas){
+        setTimeout(initWhiteboard,50);
+    }
+}
+
+function closeWhiteboard(){
+    document.getElementById("whiteboard").style.display = "none";
+    document.getElementById("subjectHome").style.display = "block";
+    updateStats();
+}
+
+updateStats();
+</script>
+</body>
+</html>
