@@ -422,17 +422,47 @@ button:hover{
     .subject-grid{grid-template-columns:1fr;}
 }
 
+
+/* ================= LANGUAGE SWITCHER ================= */
+.language-bar{
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+    margin-bottom:18px;
+}
+.language-btn{
+    width:auto;
+    margin:0;
+    padding:8px 12px;
+    font-size:14px;
+    background:#f3f4f6;
+    color:#374151;
+    border:2px solid #e5e7eb;
+}
+.language-btn.active{
+    background:#2563eb;
+    color:white;
+    border-color:#2563eb;
+}
+
 </style>
 </head>
 
 <body>
 <div class="container">
 
+<!-- ================= LANGUAGE SWITCHER ================= -->
+<div class="language-bar">
+    <button class="language-btn active" data-lang="uz" onclick="setLanguage('uz')">🇺🇿 O‘zbek</button>
+    <button class="language-btn" data-lang="ru" onclick="setLanguage('ru')">🇷🇺 Русский</button>
+    <button class="language-btn" data-lang="en" onclick="setLanguage('en')">🇬🇧 English</button>
+</div>
+
 <!-- ================= SUBJECT SELECTOR ================= -->
 <div id="subjectHome" class="subject-screen">
-    <div class="mode-label">📚 BUGUN NIMANI O‘RGANAMIZ?</div>
-    <h1>Study Quiz</h1>
-    <p class="subtitle">Bugun yechmoqchi bo‘lgan faningizni tanlang</p>
+    <div class="mode-label" id="modeLabel">📚 BUGUN NIMANI O‘RGANAMIZ?</div>
+    <h1 id="mainTitle">Study Quiz</h1>
+    <p class="subtitle" id="mainSubtitle">Bugun yechmoqchi bo‘lgan faningizni tanlang</p>
 
     <div class="subject-grid">
         <div class="subject-card" onclick="openSubject('history')">
@@ -445,6 +475,13 @@ button:hover{
             <div class="subject-icon">➗</div>
             Matematika
             <span class="subject-desc">Arifmetika, algebra va geometriya bo‘yicha testlar</span>
+        </div>
+
+
+        <div class="subject-card" onclick="openSubject('russian')">
+            <div class="subject-icon">🇷🇺</div>
+            Русский язык
+            <span class="subject-desc">Орфография, грамматика, лексика и культура речи</span>
         </div>
 
         <div class="subject-card" onclick="openSubject('english')">
@@ -533,14 +570,14 @@ button:hover{
     <div id="question" class="question"></div>
     <div id="answers"></div>
 
-    <button onclick="nextQuestion()">Keyingi →</button>
-    <button class="back-btn" onclick="backToTopics()">← Mavzuni almashtirish</button>
+    <button id="nextBtn" onclick="nextQuestion()">Keyingi →</button>
+    <button id="changeTopicBtn" class="back-btn" onclick="backToTopics()">← Mavzuni almashtirish</button>
 </div>
 
 <!-- ================= RESULT ================= -->
 <div id="result" style="display:none">
     <div class="result">
-        <h1>🎉 Test tugadi!</h1>
+        <h1 id="resultTitle">🎉 Test tugadi!</h1>
 
         <div class="big-score" id="finalScore">0%</div>
         <div class="result-message" id="resultMessage"></div>
@@ -548,22 +585,22 @@ button:hover{
         <div class="result-stats">
             <div class="result-box">
                 <strong id="correctCount">0</strong>
-                To‘g‘ri
+                <span id="correctLabel">To‘g‘ri</span>
             </div>
             <div class="result-box">
                 <strong id="wrongCount">0</strong>
-                Xatolar
+                <span id="wrongLabel">Xatolar</span>
             </div>
             <div class="result-box">
                 <strong id="totalQuestions">0</strong>
-                Savollar
+                <span id="questionsLabel">Savollar</span>
             </div>
         </div>
 
         <div id="mistakes"></div>
 
-        <button onclick="backToTopics()">📚 Mavzuni tanlash</button>
-        <button class="back-btn" onclick="backToSubjects()">🏠 Fan tanlash</button>
+        <button id="chooseTopicBtn" onclick="backToTopics()">📚 Mavzuni tanlash</button>
+        <button id="homeBtn" class="back-btn" onclick="backToSubjects()">🏠 Fan tanlash</button>
     </div>
 </div>
 
@@ -1904,38 +1941,90 @@ const mathQuestionSets = {
 
 Object.assign(questionSets, mathQuestionSets);
 
+
+/* ================= RUSSIAN LANGUAGE ================= */
+const russianQuestionSets = {
+    orthography: [
+        {q:"В каком слове нужен мягкий знак?", a:["мяч","ночь","плащ","камыш"], c:1, e:"Правильно: «ночь» пишется с мягким знаком."},
+        {q:"Какое слово написано правильно?", a:["привилегия","превилегия","привелегия","превелегия"], c:0, e:"Правильное написание: «привилегия»."},
+        {q:"В каком слове пишется НН?", a:["ветре..ый","кожа..ый","време..ый","ю..ый"], c:2, e:"Правильно: «временный» — с НН."},
+        {q:"Как правильно написать?", a:["извените","извините","извенити","извениите"], c:1, e:"Правильное написание: «извините»."},
+        {q:"В каком слове пишется приставка ПРИ-?", a:["пр..красный","пр..ехать","пр..одолеть","пр..ступить закон"], c:1, e:"«Приехать» обозначает приближение, поэтому используется ПРИ-."},
+        {q:"Какое слово написано без ошибки?", a:["рассвет","расвет","рассветт","расветт"], c:0, e:"Правильно: «рассвет»."},
+        {q:"Как правильно: «не» с прилагательным в предложении «Это был ___интересный фильм»?", a:["не интересный","неинтересный","ниинтересный","не-интересный"], c:1, e:"Прилагательное можно написать слитно: «неинтересный»."},
+        {q:"В каком слове ударение падает на последний слог?", a:["звонит","торты","договор","баловать"], c:0, e:"Нормативное произношение: звонИт."},
+        {q:"Как правильно написать слово?", a:["бесшумный","безшумный","бесшумныйй","бешшумный"], c:0, e:"Перед глухим Ш пишется С: «бесшумный»."},
+        {q:"Какое слово является исключением и пишется с И после Ц?", a:["цирк","цыплёнок","цыган","цыфра"], c:0, e:"«Цирк» пишется с И; слова «цыплёнок» и «цыган» — с Ы."}
+    ],
+    grammar_ru: [
+        {q:"Выберите правильную форму: «У меня нет ___».", a:["время","времени","времене","времен"], c:1, e:"После «нет» употребляется родительный падеж: «нет времени»."},
+        {q:"Какой частью речи является слово «быстро»?", a:["существительным","прилагательным","наречием","местоимением"], c:2, e:"«Быстро» отвечает на вопрос «как?» и является наречием."},
+        {q:"Выберите правильный вариант: «Я интересуюсь ___».", a:["музыка","музыке","музыкой","музыку"], c:2, e:"Глагол «интересоваться» требует творительного падежа: «интересуюсь музыкой»."},
+        {q:"Какой вид связи в словосочетании «интересная книга»?", a:["управление","согласование","примыкание","предложение"], c:1, e:"Прилагательное согласуется с существительным в роде, числе и падеже."},
+        {q:"Выберите правильное окончание: «Мы гордимся наш___ университетом».", a:["-им","-ем","-ым","-ом"], c:0, e:"Правильно: «нашим университетом»."},
+        {q:"Какое предложение является сложным?", a:["Наступил вечер.","Мы пришли домой и поужинали.","Когда начался дождь, мы вернулись домой.","На улице холодно."], c:2, e:"В предложении две грамматические основы, соединённые союзом."},
+        {q:"Какой падеж у слова «другом» в предложении «Я говорю с другом»?", a:["родительный","дательный","творительный","предложный"], c:2, e:"Предлог «с» в этом значении требует творительного падежа."},
+        {q:"Выберите правильный вариант: «Они ___ вчера поздно».", a:["приходил","приходили","приходила","пришёл"], c:1, e:"Подлежащее «они» требует формы множественного числа: «приходили»."},
+        {q:"Какое слово является местоимением?", a:["красивый","кто-то","быстро","дом"], c:1, e:"«Кто-то» — неопределённое местоимение."},
+        {q:"Выберите правильную форму: «Я помог ___ сестре».", a:["моя","моей","мою","моим"], c:1, e:"После глагола «помочь» нужен дательный падеж: «моей сестре»."}
+    ],
+    vocabulary_ru: [
+        {q:"Что означает слово «благодарность»?", a:["чувство признательности","сильный страх","состояние усталости","желание спорить"], c:0, e:"Благодарность — чувство признательности за помощь или добро."},
+        {q:"Какой синоним подходит к слову «смелый»?", a:["трусливый","храбрый","грустный","медленный"], c:1, e:"Синоним слова «смелый» — «храбрый»."},
+        {q:"Какой антоним к слову «широкий»?", a:["длинный","узкий","высокий","глубокий"], c:1, e:"Антоним «широкий» — «узкий»."},
+        {q:"Что означает выражение «держать слово»?", a:["громко говорить","выполнять обещание","молчать","читать вслух"], c:1, e:"«Держать слово» означает выполнять данное обещание."},
+        {q:"Какое слово лишнее?", a:["яблоко","груша","морковь","персик"], c:2, e:"Морковь — овощ, остальные слова обозначают фрукты."},
+        {q:"Выберите наиболее близкое по значению слово к «важный».", a:["значительный","случайный","маленький","редкий"], c:0, e:"«Значительный» может быть синонимом «важный»."},
+        {q:"Что означает слово «впечатление»?", a:["след, который событие или человек оставляет в сознании","вид транспорта","вид спорта","название профессии"], c:0, e:"Впечатление — ощущение или образ, возникший под влиянием чего-либо."},
+        {q:"Какое слово относится к книжной лексике?", a:["авоська","перст","крутой","классно"], c:1, e:"«Перст» — устаревшее книжное слово со значением «палец»."},
+        {q:"Что означает «единомышленник»?", a:["человек с похожими взглядами","случайный прохожий","соперник","учитель"], c:0, e:"Единомышленник — человек, который разделяет чьи-либо взгляды и убеждения."},
+        {q:"Какое выражение означает «очень быстро»?", a:["спустя рукава","сломя голову","на краю света","как снег на голову"], c:1, e:"«Сломя голову» означает очень быстро, стремительно."}
+    ]
+};
+
+Object.assign(questionSets, russianQuestionSets);
+
 const subjectData = {
     history: {
-        title: "🇺🇿 O‘zbekiston Tarixi",
-        subtitle: "Tarix mavzusini tanlang va testni boshlang",
+        title: {uz:"🇺🇿 O‘zbekiston Tarixi", ru:"🇺🇿 История Узбекистана", en:"🇺🇿 History of Uzbekistan"},
+        subtitle: {uz:"Tarix mavzusini tanlang va testni boshlang", ru:"Выберите тему истории и начните тест", en:"Choose a history topic and start the test"},
         topics: [
-            ["ancient","🏛️","Qadimgi O‘zbekiston"],
-            ["temur","⚔️","Amir Temur davri"],
-            ["khanates","👑","Xonliklar tarixi"],
-            ["uzbekistan","🇺🇿","O‘zbekiston tarixi"],
-            ["independence","📜","Mustaqillik tarixi"],
-            ["silkroad","🏺","Buyuk Ipak yo‘li"]
+            ["ancient","🏛️",{uz:"Qadimgi O‘zbekiston",ru:"Древний Узбекистан",en:"Ancient Uzbekistan"}],
+            ["temur","⚔️",{uz:"Amir Temur davri",ru:"Эпоха Амира Темура",en:"Amir Timur Era"}],
+            ["khanates","👑",{uz:"Xonliklar tarixi",ru:"История ханств",en:"History of the Khanates"}],
+            ["uzbekistan","🇺🇿",{uz:"O‘zbekiston tarixi",ru:"История Узбекистана",en:"Uzbekistan History"}],
+            ["independence","📜",{uz:"Mustaqillik tarixi",ru:"История независимости",en:"History of Independence"}],
+            ["silkroad","🏺",{uz:"Buyuk Ipak yo‘li",ru:"Великий Шёлковый путь",en:"Great Silk Road"}]
         ]
     },
     math: {
-        title: "➗ Matematika",
-        subtitle: "Matematika mavzusini tanlang va testni boshlang",
+        title: {uz:"➗ Matematika",ru:"➗ Математика",en:"➗ Mathematics"},
+        subtitle: {uz:"Matematika mavzusini tanlang va testni boshlang",ru:"Выберите тему математики и начните тест",en:"Choose a math topic and start the test"},
         topics: [
-            ["arithmetic","🔢","Arifmetika"],
-            ["algebra","📐","Algebra"],
-            ["geometry","📏","Geometriya"]
+            ["arithmetic","🔢",{uz:"Arifmetika",ru:"Арифметика",en:"Arithmetic"}],
+            ["algebra","📐",{uz:"Algebra",ru:"Алгебра",en:"Algebra"}],
+            ["geometry","📏",{uz:"Geometriya",ru:"Геометрия",en:"Geometry"}]
         ]
     },
     english: {
-        title: "🇬🇧 English Grammar",
-        subtitle: "Choose a grammar topic and start your test",
+        title: {uz:"🇬🇧 English Grammar",ru:"🇬🇧 Английская грамматика",en:"🇬🇧 English Grammar"},
+        subtitle: {uz:"Grammatika mavzusini tanlang va testni boshlang",ru:"Выберите тему грамматики и начните тест",en:"Choose a grammar topic and start the test"},
         topics: [
-            ["comparatives","📈","Comparatives & Superlatives"],
-            ["modal","💬","Modal Verbs"],
-            ["have","📘","Have to / Has to"],
-            ["can","⚡","Can / Could"],
-            ["must","🔴","Must"],
-            ["should","🟢","Should"]
+            ["comparatives","📈",{uz:"Comparatives & Superlatives",ru:"Сравнительная и превосходная степени",en:"Comparatives & Superlatives"}],
+            ["modal","💬",{uz:"Modal Verbs",ru:"Модальные глаголы",en:"Modal Verbs"}],
+            ["have","📘",{uz:"Have to / Has to",ru:"Have to / Has to",en:"Have to / Has to"}],
+            ["can","⚡",{uz:"Can / Could",ru:"Can / Could",en:"Can / Could"}],
+            ["must","🔴",{uz:"Must",ru:"Must",en:"Must"}],
+            ["should","🟢",{uz:"Should",ru:"Should",en:"Should"}]
+        ]
+    },
+    russian: {
+        title: {uz:"🇷🇺 Rus tili",ru:"🇷🇺 Русский язык",en:"🇷🇺 Russian Language"},
+        subtitle: {uz:"Rus tili mavzusini tanlang va testni boshlang",ru:"Выберите тему русского языка и начните тест",en:"Choose a Russian language topic and start the test"},
+        topics: [
+            ["orthography","✍️",{uz:"Imlo",ru:"Орфография",en:"Orthography"}],
+            ["grammar_ru","📚",{uz:"Grammatika",ru:"Грамматика",en:"Grammar"}],
+            ["vocabulary_ru","💬",{uz:"Leksika",ru:"Лексика",en:"Vocabulary"}]
         ]
     }
 };
@@ -1952,6 +2041,128 @@ let currentTopic = "";
    SUBJECT SELECTOR
 ===================================================== */
 
+
+/* ================= LANGUAGES ================= */
+let currentLanguage = localStorage.getItem("siteLanguage") || "uz";
+
+const uiText = {
+    uz:{
+        mode:"📚 BUGUN NIMANI O‘RGANAMIZ?",
+        mainTitle:"Study Quiz",
+        mainSubtitle:"Bugun yechmoqchi bo‘lgan faningizni tanlang",
+        history:"O‘zbekiston tarixi",
+        historyDesc:"Qadimgi davr, Amir Temur, xonliklar, mustaqillik va Ipak yo‘li",
+        math:"Matematika",
+        mathDesc:"Arifmetika, algebra va geometriya bo‘yicha testlar",
+        english:"English Grammar",
+        englishDesc:"Comparatives, Modal Verbs, Have to, Can/Could, Must va Should",
+        russian:"Rus tili",
+        russianDesc:"Imlo, grammatika, leksika va nutq madaniyati",
+        completed:"Tugatilgan testlar", average:"O‘rtacha natija", best:"Eng yaxshi natija",
+        whiteboard:"📝<br>Whiteboard", chooseSubject:"← Fan tanlashga qaytish",
+        next:"Keyingi →", changeTopic:"← Mavzuni almashtirish",
+        result:"🎉 Test tugadi!", correct:"To‘g‘ri", wrong:"Xatolar", questions:"Savollar",
+        chooseTopic:"📚 Mavzuni tanlash", home:"🏠 Fan tanlash", question:"Savol", score:"Natija"
+    },
+    ru:{
+        mode:"📚 ЧТО БУДЕМ ИЗУЧАТЬ СЕГОДНЯ?",
+        mainTitle:"Study Quiz",
+        mainSubtitle:"Выберите предмет, который хотите изучать сегодня",
+        history:"История Узбекистана",
+        historyDesc:"Древность, Амир Темур, ханства, независимость и Шёлковый путь",
+        math:"Математика",
+        mathDesc:"Тесты по арифметике, алгебре и геометрии",
+        english:"Английская грамматика",
+        englishDesc:"Comparatives, Modal Verbs, Have to, Can/Could, Must и Should",
+        russian:"Русский язык",
+        russianDesc:"Орфография, грамматика, лексика и культура речи",
+        completed:"Пройдено тестов", average:"Средний результат", best:"Лучший результат",
+        whiteboard:"📝<br>Интерактивная доска", chooseSubject:"← Вернуться к выбору предмета",
+        next:"Следующий →", changeTopic:"← Сменить тему",
+        result:"🎉 Тест завершён!", correct:"Правильные", wrong:"Ошибки", questions:"Вопросы",
+        chooseTopic:"📚 Выбрать тему", home:"🏠 Выбрать предмет", question:"Вопрос", score:"Результат"
+    },
+    en:{
+        mode:"📚 WHAT ARE WE STUDYING TODAY?",
+        mainTitle:"Study Quiz",
+        mainSubtitle:"Choose the subject you want to study today",
+        history:"History of Uzbekistan",
+        historyDesc:"Ancient history, Amir Timur, khanates, independence and the Silk Road",
+        math:"Mathematics",
+        mathDesc:"Arithmetic, algebra and geometry tests",
+        english:"English Grammar",
+        englishDesc:"Comparatives, Modal Verbs, Have to, Can/Could, Must and Should",
+        russian:"Russian Language",
+        russianDesc:"Orthography, grammar, vocabulary and speech culture",
+        completed:"Completed tests", average:"Average score", best:"Best score",
+        whiteboard:"📝<br>Whiteboard", chooseSubject:"← Back to subject selection",
+        next:"Next →", changeTopic:"← Change topic",
+        result:"🎉 Test completed!", correct:"Correct", wrong:"Mistakes", questions:"Questions",
+        chooseTopic:"📚 Choose topic", home:"🏠 Choose subject", question:"Question", score:"Score"
+    }
+};
+
+function setLanguage(lang){
+    currentLanguage = lang;
+    localStorage.setItem("siteLanguage", lang);
+
+    document.querySelectorAll(".language-btn").forEach(btn=>{
+        btn.classList.toggle("active", btn.dataset.lang === lang);
+    });
+
+    const t = uiText[lang];
+    document.getElementById("modeLabel").innerText = t.mode;
+    document.getElementById("mainTitle").innerText = t.mainTitle;
+    document.getElementById("mainSubtitle").innerText = t.mainSubtitle;
+
+    const cards = document.querySelectorAll(".subject-card");
+    if(cards.length >= 4){
+        cards[0].childNodes[2].textContent = "\n            " + t.history + "\n            ";
+        cards[0].querySelector(".subject-desc").innerText = t.historyDesc;
+        cards[1].childNodes[2].textContent = "\n            " + t.math + "\n            ";
+        cards[1].querySelector(".subject-desc").innerText = t.mathDesc;
+        cards[2].childNodes[2].textContent = "\n            " + t.russian + "\n            ";
+        cards[2].querySelector(".subject-desc").innerText = t.russianDesc;
+        cards[3].childNodes[2].textContent = "\n            " + t.english + "\n            ";
+        cards[3].querySelector(".subject-desc").innerText = t.englishDesc;
+    }
+
+    const statTitles = document.querySelectorAll(".stat-title");
+    if(statTitles.length >= 3){
+        statTitles[0].innerText = t.completed;
+        statTitles[1].innerText = t.average;
+        statTitles[2].innerText = t.best;
+    }
+
+    const whiteboardBtn = document.querySelector(".topic[onclick='openWhiteboard()']");
+    if(whiteboardBtn) whiteboardBtn.innerHTML = t.whiteboard;
+
+    if(currentSubject && subjectData[currentSubject]){
+        const data = subjectData[currentSubject];
+        document.getElementById("subjectTitle").innerText = data.title[lang];
+        document.getElementById("subjectSubtitle").innerText = data.subtitle[lang];
+        renderTopics();
+    }
+
+    if(document.getElementById("quiz").style.display !== "none"){
+        document.getElementById("nextBtn").innerText = t.next;
+        document.getElementById("changeTopicBtn").innerText = t.changeTopic;
+        document.getElementById("topicName").innerText =
+            (subjectData[currentSubject]?.topics.find(x=>x[0]===currentTopic)?.[2]?.[lang]) || topicNames[currentTopic] || "";
+        loadQuestion();
+    }
+}
+
+function renderTopics(){
+    const data = subjectData[currentSubject];
+    const list = document.getElementById("topicList");
+    list.innerHTML = data.topics.map(t => `
+        <div class="topic" onclick="startQuiz('${t[0]}',this)">
+            ${t[1]}<br>${t[2][currentLanguage]}
+        </div>
+    `).join("");
+}
+
 function openSubject(subject){
     currentSubject = subject;
 
@@ -1962,15 +2173,9 @@ function openSubject(subject){
     document.getElementById("whiteboard").style.display = "none";
 
     const data = subjectData[subject];
-    document.getElementById("subjectTitle").innerText = data.title;
-    document.getElementById("subjectSubtitle").innerText = data.subtitle;
-
-    const list = document.getElementById("topicList");
-    list.innerHTML = data.topics.map(t => `
-        <div class="topic" onclick="startQuiz('${t[0]}',this)">
-            ${t[1]}<br>${t[2]}
-        </div>
-    `).join("");
+    document.getElementById("subjectTitle").innerText = data.title[currentLanguage];
+    document.getElementById("subjectSubtitle").innerText = data.subtitle[currentLanguage];
+    renderTopics();
 }
 
 function backToSubjects(){
@@ -2003,7 +2208,10 @@ const topicNames = {
     have:"📘 Have to / Has to",
     can:"⚡ Can / Could",
     must:"🔴 Must",
-    should:"🟢 Should"
+    should:"🟢 Should",
+    orthography:"✍️ Орфография",
+    grammar_ru:"📚 Грамматика",
+    vocabulary_ru:"💬 Лексика"
 };
 
 /* =====================================================
@@ -2029,7 +2237,9 @@ function startQuiz(topic, element){
     document.getElementById("result").style.display = "none";
     document.getElementById("quiz").style.display = "block";
 
-    document.getElementById("topicName").innerText = topicNames[topic];
+    const topicInfo = subjectData[currentSubject]?.topics.find(x=>x[0]===topic);
+    document.getElementById("topicName").innerText =
+        topicInfo?.[2]?.[currentLanguage] || topicNames[topic] || "";
 
     loadQuestion();
 }
@@ -2037,8 +2247,9 @@ function startQuiz(topic, element){
 function loadQuestion(){
     const total = currentQuiz.length;
 
+    const ui = uiText[currentLanguage];
     document.getElementById("progressText").innerText =
-        "Savol " + (current + 1) + " / " + total;
+        ui.question + " " + (current + 1) + " / " + total;
 
     const percent = Math.round((current / total) * 100);
     document.getElementById("progressFill").style.width = percent + "%";
@@ -2046,7 +2257,7 @@ function loadQuestion(){
     const livePercent = current === 0 ? 0 : Math.round((score / current) * 100);
 
     document.getElementById("liveScore").innerText =
-        "Natija: " + livePercent + "%";
+        ui.score + ": " + livePercent + "%";
 
     document.getElementById("question").innerText =
         currentQuiz[current].q;
@@ -2383,6 +2594,7 @@ function closeWhiteboard(){
 }
 
 updateStats();
+setLanguage(currentLanguage);
 </script>
 </body>
 </html>
